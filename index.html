@@ -792,7 +792,7 @@
 
         // Cache per ridurre richieste duplicate
         const requestCache = new Map();
-        const CACHE_DURATION = 30000; // 30 secondi
+        const CACHE_DURATION = 5000; // Ridotto da 30 a 5 secondi per maggiore velocità
 
         // Funzione per mostrare toast notification
         function showToast(message, type) {
@@ -899,18 +899,18 @@
             });
         }
 
-        // Funzione per gestire richieste API con timeout
+        // Funzione per gestire richieste API con timeout - VERSIONE OTTIMIZZATA
         async function handleRequest(url, uid, action) {
             if (!uid) {
                 showToast('Inserisci un ID utente valido', 'error');
                 return;
             }
             
-            // Controlla cache per evitare richieste duplicate
+            // Controlla cache per evitare richieste duplicate - ridotto il tempo di cache per maggiore velocità
             const cacheKey = `${action}-${uid}`;
             const cached = requestCache.get(cacheKey);
             
-            if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+            if (cached && (Date.now() - cached.timestamp) < 5000) { // Ridotto da 30 secondi a 5 secondi
                 showToast('Richiesta già inviata di recente. Attendi prima di ripetere.', 'error');
                 return;
             }
@@ -920,7 +920,7 @@
             try {
                 // Mostra indicatore di caricamento
                 const originalText = event.target.innerHTML;
-                event.target.innerHTML = '<span class="loading"></span> Caricamento...';
+                event.target.innerHTML = '<span class="loading"></span>';
                 event.target.disabled = true;
                 
                 // Aggiorna stato connessione
@@ -929,14 +929,23 @@
                 // Avvia timer per misurare velocità
                 requestStartTime = Date.now();
                 
-                // Simula progresso
-                simulateProgress();
+                // Simula progresso - accelerato
+                simulateProgressFast();
                 
-                // Timeout per evitare richieste bloccanti
+                // Timeout ridotto per maggiore responsività
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 secondi timeout
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // Ridotto da 10 a 5 secondi
                 
-                const response = await fetch(fullUrl, { signal: controller.signal });
+                // Fetch con opzioni ottimizzate per la velocità
+                const response = await fetch(fullUrl, { 
+                    signal: controller.signal,
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                    // Disabilita il caching del browser per richieste più fresche
+                    cache: 'no-store'
+                });
                 clearTimeout(timeoutId);
                 
                 // Calcola velocità di risposta
@@ -996,16 +1005,28 @@
             }
         }
 
-        // Simula progresso della richiesta
+        // Simula progresso della richiesta - VERSIONE VELOCE
         function simulateProgress() {
             let progress = 0;
             const interval = setInterval(() => {
-                progress += Math.random() * 10;
+                progress += Math.random() * 20; // Aumentato l'incremento
                 if (progress >= 90) {
                     clearInterval(interval);
                 }
                 requestProgress.style.width = `${progress}%`;
-            }, 200);
+            }, 100); // Ridotto l'intervallo da 200ms a 100ms
+        }
+        
+        // Versione ancora più veloce per richieste rapide
+        function simulateProgressFast() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30; // Incremento ancora maggiore
+                if (progress >= 95) { // Limite leggermente inferiore per apparire più veloce
+                    clearInterval(interval);
+                }
+                requestProgress.style.width = `${progress}%`;
+            }, 50); // Intervallo molto ridotto per maggiore velocità
         }
 
         // Reset progress bar
