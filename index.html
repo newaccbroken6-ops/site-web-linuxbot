@@ -6,7 +6,7 @@
     <title>Linux Bot - Gestione Amicizie</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -33,7 +33,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e293b 100%);
+            background-color: #000000;
+            background-attachment: fixed;
             color: var(--light);
             min-height: 100vh;
             overflow-x: hidden;
@@ -95,15 +96,39 @@
         }
 
         h1 {
+            font-family: 'Orbitron', 'Inter', sans-serif;
             font-size: 4rem;
             margin-bottom: 0.5rem;
             background: linear-gradient(90deg, var(--primary), var(--primary-light), #06b6d4);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
-            letter-spacing: -0.5px;
-            font-weight: 800;
+            text-shadow: 
+                0 0 10px rgba(99, 102, 241, 0.5),
+                0 0 20px rgba(99, 102, 241, 0.4),
+                0 0 30px rgba(99, 102, 241, 0.3),
+                0 0 40px rgba(99, 102, 241, 0.2);
+            letter-spacing: 1px;
+            font-weight: 900;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 
+                    0 0 10px rgba(99, 102, 241, 0.5),
+                    0 0 20px rgba(99, 102, 241, 0.4),
+                    0 0 30px rgba(99, 102, 241, 0.3),
+                    0 0 40px rgba(99, 102, 241, 0.2);
+            }
+            
+            to {
+                text-shadow: 
+                    0 0 15px rgba(99, 102, 241, 0.6),
+                    0 0 25px rgba(99, 102, 241, 0.5),
+                    0 0 35px rgba(99, 102, 241, 0.4),
+                    0 0 45px rgba(99, 102, 241, 0.3);
+            }
         }
 
         .subtitle {
@@ -130,13 +155,13 @@
         }
 
         .card {
-            background: var(--card-bg);
+            background-color: rgba(255, 255, 255, 0);
             backdrop-filter: blur(20px);
             border-radius: 24px;
             padding: 3rem;
             margin-bottom: 2rem;
             box-shadow: 
-                0 10px 40px rgba(0, 0, 0, 0.2),
+                0 10px 40px rgba(255, 255, 255, 0),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -536,6 +561,81 @@
             70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
             100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
         }
+
+        /* Nuovi stili per miglioramenti grafici */
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-top: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: var(--error);
+        }
+
+        .connection-speed {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .text-success {
+            color: var(--success);
+        }
+
+        .text-error {
+            color: var(--error);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
 </head>
 <body>
@@ -548,11 +648,16 @@
         <header>
             <div class="logo">
                 <div class="logo-icon pulse">
-                    <i class="fas fa-robot"></i>
+                    <img src="logo.jpg" alt="Linux Bot Logo" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
                 </div>
                 <h1>LINUX BOT</h1>
             </div>
-            <p class="subtitle">Sistema avanzato di gestione amicizie con interfaccia moderna e prestazioni ottimizzate. Aggiungi o rimuovi contatti in tempo reale.</p>
+            <p class="subtitle">IG: youssef_el797</p>
+            <div class="status-indicator">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">Connesso</span>
+            </div>
+            <div class="connection-speed" id="connection-speed"></div>
         </header>
         
         <main class="main-content">
@@ -565,6 +670,9 @@
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
                         </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="request-progress"></div>
                     </div>
                 </div>
                 
@@ -622,34 +730,30 @@
         
         <footer>
             <div class="footer-content">
-                <p>Linux Bot &copy; 2023 - Sistema avanzato di gestione amicizie</p>
-                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--gray-dark);">Design moderno con interfaccia ottimizzata per prestazioni e usabilità</p>
+                <p>Linux Bot &copy; 2025 - add friend</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--gray-dark);">IG: youssef_el797</p>
             </div>
         </footer>
     </div>
 
     <script>
-        // Inizializzazione particles.js avanzata
+        // Inizializzazione particles.js avanzata - Effetto neve
         particlesJS('particles-js', {
             particles: {
-                number: { value: 120, density: { enable: true, value_area: 1000 } },
-                color: { value: "#6366f1" },
+                number: { value: 200, density: { enable: true, value_area: 1000 } },
+                color: { value: "#ffffff" },
                 shape: { type: "circle" },
-                opacity: { value: 0.6, random: true },
-                size: { value: 4, random: true },
+                opacity: { value: 0.7, random: true },
+                size: { value: 3, random: true },
                 line_linked: {
-                    enable: true,
-                    distance: 180,
-                    color: "#6366f1",
-                    opacity: 0.3,
-                    width: 1.5
+                    enable: false
                 },
                 move: {
                     enable: true,
-                    speed: 2.5,
-                    direction: "none",
+                    speed: 1.5,
+                    direction: "bottom",
                     random: true,
-                    straight: false,
+                    straight: true,
                     out_mode: "out",
                     bounce: false
                 }
@@ -657,8 +761,8 @@
             interactivity: {
                 detect_on: "canvas",
                 events: {
-                    onhover: { enable: true, mode: "repulse" },
-                    onclick: { enable: true, mode: "push" },
+                    onhover: { enable: false },
+                    onclick: { enable: false },
                     resize: true
                 }
             },
@@ -673,13 +777,22 @@
         const totalRequestsEl = document.getElementById('total-requests');
         const successRateEl = document.getElementById('success-rate');
         const toastContainer = document.getElementById('toast-container');
+        const requestProgress = document.getElementById('request-progress');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const connectionSpeed = document.getElementById('connection-speed');
 
         // Statistiche
         let totalRequests = 0;
         let successfulRequests = 0;
+        let requestStartTime = 0;
 
         // Cronologia
         let actionHistory = [];
+
+        // Cache per ridurre richieste duplicate
+        const requestCache = new Map();
+        const CACHE_DURATION = 30000; // 30 secondi
 
         // Funzione per mostrare toast notification
         function showToast(message, type) {
@@ -768,7 +881,7 @@
             
             actionHistory.forEach(item => {
                 const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
+                historyItem.className = 'history-item fade-in';
                 
                 const actionText = item.action === 'add' ? 'Aggiunto' : 'Rimosso';
                 const icon = item.success ? 'fa-check-circle text-success' : 'fa-times-circle text-error';
@@ -786,10 +899,19 @@
             });
         }
 
-        // Funzione per gestire richieste API
+        // Funzione per gestire richieste API con timeout
         async function handleRequest(url, uid, action) {
             if (!uid) {
                 showToast('Inserisci un ID utente valido', 'error');
+                return;
+            }
+            
+            // Controlla cache per evitare richieste duplicate
+            const cacheKey = `${action}-${uid}`;
+            const cached = requestCache.get(cacheKey);
+            
+            if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+                showToast('Richiesta già inviata di recente. Attendi prima di ripetere.', 'error');
                 return;
             }
             
@@ -801,12 +923,34 @@
                 event.target.innerHTML = '<span class="loading"></span> Caricamento...';
                 event.target.disabled = true;
                 
-                const response = await fetch(fullUrl);
+                // Aggiorna stato connessione
+                updateConnectionStatus('pending');
+                
+                // Avvia timer per misurare velocità
+                requestStartTime = Date.now();
+                
+                // Simula progresso
+                simulateProgress();
+                
+                // Timeout per evitare richieste bloccanti
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 secondi timeout
+                
+                const response = await fetch(fullUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                // Calcola velocità di risposta
+                const responseTime = Date.now() - requestStartTime;
+                updateConnectionSpeed(responseTime);
+                
                 const data = await response.json();
                 
                 // Ripristina il bottone
                 event.target.innerHTML = originalText;
                 event.target.disabled = false;
+                
+                // Aggiorna stato connessione
+                updateConnectionStatus('success');
                 
                 if (response.ok) {
                     const successMessage = action === 'add' 
@@ -816,6 +960,12 @@
                     showToast(successMessage, 'success');
                     updateStats(true);
                     addToHistory(action, uid, true);
+                    
+                    // Salva in cache
+                    requestCache.set(cacheKey, {
+                        timestamp: Date.now(),
+                        result: data
+                    });
                 } else {
                     const errorMessage = '❌ Errore: ' + (data.message || 'Operazione non riuscita');
                     showToast(errorMessage, 'error');
@@ -827,11 +977,74 @@
                 event.target.innerHTML = originalText;
                 event.target.disabled = false;
                 
-                const errorMessage = '❌ Errore di connessione: ' + error.message;
+                // Aggiorna stato connessione
+                updateConnectionStatus('error');
+                
+                let errorMessage;
+                if (error.name === 'AbortError') {
+                    errorMessage = '❌ Timeout: La richiesta ha impiegato troppo tempo';
+                } else {
+                    errorMessage = '❌ Errore di connessione: ' + error.message;
+                }
+                
                 showToast(errorMessage, 'error');
                 updateStats(false);
                 addToHistory(action, uid, false);
+            } finally {
+                // Reset progress bar
+                resetProgress();
             }
+        }
+
+        // Simula progresso della richiesta
+        function simulateProgress() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 90) {
+                    clearInterval(interval);
+                }
+                requestProgress.style.width = `${progress}%`;
+            }, 200);
+        }
+
+        // Reset progress bar
+        function resetProgress() {
+            requestProgress.style.width = '0%';
+        }
+
+        // Aggiorna stato connessione
+        function updateConnectionStatus(status) {
+            switch(status) {
+                case 'pending':
+                    statusDot.style.background = '#f59e0b';
+                    statusText.textContent = 'Connessione in corso...';
+                    break;
+                case 'success':
+                    statusDot.style.background = '#10b981';
+                    statusText.textContent = 'Connesso';
+                    break;
+                case 'error':
+                    statusDot.style.background = '#ef4444';
+                    statusText.textContent = 'Errore di connessione';
+                    break;
+            }
+        }
+
+        // Aggiorna velocità di connessione
+        function updateConnectionSpeed(responseTime) {
+            let speedText;
+            if (responseTime < 500) {
+                speedText = 'Velocità: Ottima';
+            } else if (responseTime < 1500) {
+                speedText = 'Velocità: Buona';
+            } else if (responseTime < 3000) {
+                speedText = 'Velocità: Media';
+            } else {
+                speedText = 'Velocità: Lenta';
+            }
+            
+            connectionSpeed.textContent = `${speedText} (${responseTime}ms)`;
         }
 
         // Aggiungi event listeners
