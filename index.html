@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Bot - Gestione Amicizie</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #8b5cf6;
+            --secondary: #f59e0b;
+            --secondary-dark: #d97706;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --gray-dark: #475569;
+            --success: #10b981;
+            --error: #ef4444;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1e293b 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0.2;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light), #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+            letter-spacing: -0.5px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2.5rem;
+        }
+
+        @media (max-width: 1100px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .card h2 {
+            margin-bottom: 2rem;
+            color: var(--light);
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 700;
+        }
+
+        .card h2 i {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 1.2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 200px;
+            padding: 18px 28px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-remove {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+            color: white;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .stat-item {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1.8rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .history {
+            margin-top: 2.5rem;
+        }
+
+        .history h3 {
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .history-list {
+            max-height: 280px;
+            overflow-y: auto;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Scrollbar personalizzata */
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .history-item {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-action {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .history-uid {
+            color: var(--gray);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .history-time {
+            color: var(--gray-dark);
+            font-size: 0.85rem;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .toast {
+            padding: 20px 25px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        .toast-error {
+            background: linear-gradient(135deg, var(--error), #dc2626);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-message {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0;
+            min-width: auto;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .toast-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 5rem;
+            padding: 3rem;
+            color: var(--gray);
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .toast-container {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+            }
+            
+            .toast {
+                max-width: 100%;
+            }
+            
+            .card {
+                padding: 2rem;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon pulse">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h1>LINUX BOT</h1>
+            </div>
+            <p class="subtitle">Sistema avanzato di gestione amicizie con interfaccia moderna e prestazioni ottimizzate. Aggiungi o rimuovi contatti in tempo reale.</p>
+        </header>
+        
+        <main class="main-content">
+            <div class="card">
+                <h2><i class="fas fa-user-friends"></i> Gestione Amicizie</h2>
+                <div class="input-group">
+                    <label for="friend-uid">ID Utente (UID)</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="friend-uid" placeholder="Inserisci l'ID dell'utente">
+                        <div class="input-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn-add" id="add-friend">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Aggiungi Amico</span>
+                    </button>
+                    <button class="btn-remove" id="remove-friend">
+                        <i class="fas fa-user-minus"></i>
+                        <span>Rimuovi Amico</span>
+                    </button>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-requests">0</div>
+                        <div class="stat-label">Richieste Totali</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="success-rate">100%</div>
+                        <div class="stat-label">Tasso di Successo</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-history"></i> Cronologia Attività</h2>
+                <div class="history">
+                    <h3><i class="fas fa-clock"></i> Ultime azioni</h3>
+                    <div class="history-list" id="history-list">
+                        <!-- Le azioni verranno aggiunte qui dinamicamente -->
+                    </div>
+                </div>
+                
+                <div class="history">
+                    <h3><i class="fas fa-info-circle"></i> Istruzioni</h3>
+                    <div class="history-list">
+                        <div class="history-item">
+                            <div>1. Inserisci l'ID utente nel campo di testo</div>
+                        </div>
+                        <div class="history-item">
+                            <div>2. Clicca su "Aggiungi Amico" per inviare una richiesta</div>
+                        </div>
+                        <div class="history-item">
+                            <div>3. Clicca su "Rimuovi Amico" per rimuovere un amico</div>
+                        </div>
+                        <div class="history-item">
+                            <div>4. Controlla lo stato dell'operazione nelle notifiche</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <p>Linux Bot &copy; 2023 - Sistema avanzato di gestione amicizie</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--gray-dark);">Design moderno con interfaccia ottimizzata per prestazioni e usabilità</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Inizializzazione particles.js avanzata
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 120, density: { enable: true, value_area: 1000 } },
+                color: { value: "#6366f1" },
+                shape: { type: "circle" },
+                opacity: { value: 0.6, random: true },
+                size: { value: 4, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 180,
+                    color: "#6366f1",
+                    opacity: 0.3,
+                    width: 1.5
+                },
+                move: {
+                    enable: true,
+                    speed: 2.5,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+
+        // Elementi DOM
+        const friendUidInput = document.getElementById('friend-uid');
+        const addFriendBtn = document.getElementById('add-friend');
+        const removeFriendBtn = document.getElementById('remove-friend');
+        const historyList = document.getElementById('history-list');
+        const totalRequestsEl = document.getElementById('total-requests');
+        const successRateEl = document.getElementById('success-rate');
+        const toastContainer = document.getElementById('toast-container');
+
+        // Statistiche
+        let totalRequests = 0;
+        let successfulRequests = 0;
+
+        // Cronologia
+        let actionHistory = [];
+
+        // Funzione per mostrare toast notification
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+            
+            toast.innerHTML = `
+                <i class="fas ${icon} toast-icon"></i>
+                <div class="toast-message">${message}</div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Animazione di entrata
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Funzione per chiudere il toast
+            const closeBtn = toast.querySelector('.toast-close');
+            closeBtn.addEventListener('click', () => {
+                hideToast(toast);
+            });
+            
+            // Auto-close dopo 5 secondi
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    hideToast(toast);
+                }
+            }, 5000);
+        }
+
+        // Funzione per nascondere il toast
+        function hideToast(toast) {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 400);
+        }
+
+        // Funzione per aggiornare le statistiche
+        function updateStats(isSuccess) {
+            totalRequests++;
+            if (isSuccess) successfulRequests++;
+            
+            totalRequestsEl.textContent = totalRequests;
+            const successRate = totalRequests > 0 ? Math.round((successfulRequests / totalRequests) * 100) : 100;
+            successRateEl.textContent = `${successRate}%`;
+        }
+
+        // Funzione per aggiungere alla cronologia
+        function addToHistory(action, uid, isSuccess) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            
+            actionHistory.unshift({
+                action,
+                uid,
+                time: timeString,
+                success: isSuccess
+            });
+            
+            // Mantieni solo le ultime 10 azioni
+            if (actionHistory.length > 10) {
+                actionHistory.pop();
+            }
+            
+            renderHistory();
+        }
+
+        // Funzione per visualizzare la cronologia
+        function renderHistory() {
+            historyList.innerHTML = '';
+            
+            if (actionHistory.length === 0) {
+                historyList.innerHTML = '<div class="history-item">Nessuna azione recente</div>';
+                return;
+            }
+            
+            actionHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const actionText = item.action === 'add' ? 'Aggiunto' : 'Rimosso';
+                const icon = item.success ? 'fa-check-circle text-success' : 'fa-times-circle text-error';
+                const colorClass = item.success ? 'success' : 'error';
+                
+                historyItem.innerHTML = `
+                    <div>
+                        <span class="history-action ${colorClass}"><i class="fas ${icon}"></i> ${actionText}</span>
+                        <div class="history-uid">UID: ${item.uid}</div>
+                    </div>
+                    <div class="history-time">${item.time}</div>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Funzione per gestire richieste API
+        async function handleRequest(url, uid, action) {
+            if (!uid) {
+                showToast('Inserisci un ID utente valido', 'error');
+                return;
+            }
+            
+            const fullUrl = url.replace('{uid}', uid);
+            
+            try {
+                // Mostra indicatore di caricamento
+                const originalText = event.target.innerHTML;
+                event.target.innerHTML = '<span class="loading"></span> Caricamento...';
+                event.target.disabled = true;
+                
+                const response = await fetch(fullUrl);
+                const data = await response.json();
+                
+                // Ripristina il bottone
+                event.target.innerHTML = originalText;
+                event.target.disabled = false;
+                
+                if (response.ok) {
+                    const successMessage = action === 'add' 
+                        ? '✅ Amico aggiunto con successo!' 
+                        : '✅ Amico rimosso con successo!';
+                    
+                    showToast(successMessage, 'success');
+                    updateStats(true);
+                    addToHistory(action, uid, true);
+                } else {
+                    const errorMessage = '❌ Errore: ' + (data.message || 'Operazione non riuscita');
+                    showToast(errorMessage, 'error');
+                    updateStats(false);
+                    addToHistory(action, uid, false);
+                }
+            } catch (error) {
+                // Ripristina il bottone
+                event.target.innerHTML = originalText;
+                event.target.disabled = false;
+                
+                const errorMessage = '❌ Errore di connessione: ' + error.message;
+                showToast(errorMessage, 'error');
+                updateStats(false);
+                addToHistory(action, uid, false);
+            }
+        }
+
+        // Aggiungi event listeners
+        addFriendBtn.addEventListener('click', function(event) {
+            const uid = friendUidInput.value.trim();
+            const url = 'https://api-requesti.onrender.com/proxy/add_friend?uid=4197713441&password=6478B1F1D3BC4CB0AC89079BA3297E29B3285BEEED3A87F7191B8AE277D6DD55&friend_uid={uid}';
+            handleRequest(url, uid, 'add');
+        });
+
+        removeFriendBtn.addEventListener('click', function(event) {
+            const uid = friendUidInput.value.trim();
+            const url = 'https://api-requesti.onrender.com/proxy/remove_friend?uid=4197713441&password=6478B1F1D3BC4CB0AC89079BA3297E29B3285BEEED3A87F7191B8AE277D6DD55&friend_uid={uid}';
+            handleRequest(url, uid, 'remove');
+        });
+
+        // Inizializza la cronologia
+        renderHistory();
+
+        // Effetto di focus sull'input al caricamento
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                friendUidInput.focus();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
